@@ -4,8 +4,8 @@ create table user (												-- all user table
 	user_birth date,									-- self explanatory
 	user_email varchar(30) not null,					-- self explanatory
 	user_pic varchar(200),								-- location of file
-	user_userpasswords_id int not null,
-	user_usertype_id int not null,
+	user_userpasswords_id int ,
+	user_usertype_id int ,
 	user_usergender_id int,
 	primary key (user_id) );
 	
@@ -19,12 +19,12 @@ create table userstatistics (
 	userstatistics_id int not null auto_increment,
 	userstatistics_date date not null,					-- date in DD/MM/YYYY of the access
 	userstatistics_session int not null,				-- number of the session
-	userstatistics_duration time not null,				-- duration, in mins, of said session
+	userstatistics_duration int not null,				-- duration, in mins, of said session
 	userstatistics_fishes int,							-- number of fishes "seen"
 	userstatistics_birds int,							-- number of birds "seen"
 	userstatistics_animals int,							-- number of animals "seen"
 	userstatistics_timezones int,						-- number of timezones visited
-	userstatistics_user_id int not null,
+	userstatistics_user_id int,
 	primary key (userstatistics_id) );
 	
 create table usertype (
@@ -39,9 +39,9 @@ create table usergender (
 	
 create table ut (
 	ut_id int not null auto_increment,
-	ut_userreq_id int not null,							-- id of user requesting the ticket
-	ut_userval_id int not null,							-- id of user validating the ticket
-	ut_ticket_id int not null,							-- id of said ticket
+	ut_userreq_id int,							-- id of user requesting the ticket
+	ut_userval_id int,							-- id of user validating the ticket
+	ut_ticket_id int,							-- id of said ticket
 	primary key(ut_id));	
 	
 create table ticket (
@@ -51,7 +51,7 @@ create table ticket (
 	ticket_scientificname varchar(100),
 	ticket_latitude Decimal(8,6) not null,				  
 	ticket_longitude Decimal(9,6) not null,
-	ticket_ticketstatus_id int not null,
+	ticket_ticketstatus_id int,
 	primary key (ticket_id));
 	
 create table ticketstatus (
@@ -80,13 +80,13 @@ create table infoactivity (
 	primary key (infoactivity_id) );
 	
 create table iis (												-- connection table between info and infospecifics
-	iis_id int not null auto_increment;
+	iis_id int not null auto_increment,
 	iis_info_id int not null,							-- connection to info table
 	iis_infospecifics_id int not null,					-- connection to infospecifics table
 	primary key (iis_id) );
  
  create table iia (												-- connection table between info and infoactivity
-	iia_id int not null auto_increment;
+	iia_id int not null auto_increment,
 	iia_info_id int not null,							-- connection to info table
 	iia_infoactivity_id int not null,					-- connection to infoactivity table	
 	primary key (iia_id) ) ;
@@ -115,56 +115,60 @@ create table tis (												-- connection table between ticket and infospecifi
  
  alter table user add constraint user_fk_usergender
 			foreign key (user_usergender_id) references usergender(usergender_id)														-- FK USER --> USERGENDER
-			ON DELETE NO ACTION ON UPDATE NO ACTION:;
+			ON DELETE NO ACTION ON UPDATE NO ACTION;
  
  alter table user add constraint user_fk_userpasswords
-			foreign key (user_userpasswords_id) references to userpasswords(userpasswords_id)											-- FK USER --> USERPASSWORDS
+			foreign key (user_userpasswords_id) references userpasswords(userpasswords_id)											-- FK USER --> USERPASSWORDS
 			ON DELETE NO ACTION ON UPDATE NO ACTION; 
  
  alter table userstatistics add constraint userstatistics_fk_user
-			foreign key (usertatistics_user_id) references user(user_id)																-- FK USERSTATISTICS --> USER
+			foreign key (userstatistics_user_id) references user(user_id)																-- FK USERSTATISTICS --> USER
 			ON DELETE NO ACTION ON UPDATE NO ACTION;
 			
-alter table ut add constraint ut_fk_user
-			foreign key (ut_user_id) references to user(user_id)																		-- FK UT --> USER
+alter table ut add constraint ut_fk_userreq
+			foreign key (ut_userreq_id) references user(user_id)																		-- FK UT --> USER
+			ON DELETE NO ACTION ON UPDATE NO ACTION;
+			
+alter table ut add constraint ut_fk_userval
+			foreign key (ut_userval_id) references user(user_id)																		-- FK UT --> USER
 			ON DELETE NO ACTION ON UPDATE NO ACTION;
 			
 alter table ut add constraint ut_fk_ticket
-			foreign key (ut_ticket_id) references to ticket(ticket_id)																	-- FK UT --> TICKET
+			foreign key (ut_ticket_id) references ticket(ticket_id)																	-- FK UT --> TICKET
 			ON DELETE NO ACTION ON UPDATE NO ACTION;
 			
 alter table ticket add constraint ticket_fk_ticketstatus
-			foreign key (ticket_ticketstatus_id) references to ticketstatus(ticketstatus_id)											-- FK TICKET --> TICKETSTATUS
+			foreign key (ticket_ticketstatus_id) references ticketstatus(ticketstatus_id)											-- FK TICKET --> TICKETSTATUS
 			ON DELETE NO ACTION ON UPDATE NO ACTION;
 			
 alter table iis add constraint iis_fk_info 
-			foreign key (iis_info_id) references to info(info_id)																		-- FK IIS --> INFO
+			foreign key (iis_info_id) references info(info_id)																		-- FK IIS --> INFO
 			ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 alter table iis add constraint iis_fk_infospecifics
-			foreign key (iis_infospecifics_id) references to infospecifics(infospecifics_id)											-- FK IIS --> INFOSPECIFICS
+			foreign key (iis_infospecifics_id) references infospecifics(infospecifics_id)											-- FK IIS --> INFOSPECIFICS
 			ON DELETE NO ACTION ON UPDATE NO ACTION;
 			
 alter table iia add constraint iia_fk_info
-			foreign key (iia_infoactivity_id) references to infoactivity(infoactivity_id)												-- FK IIA --> INFO
+			foreign key (iia_infoactivity_id) references infoactivity(infoactivity_id)												-- FK IIA --> INFO
 			ON DELETE NO ACTION ON UPDATE NO ACTION;
 			
 alter table iia add constraint iia_fk_infoactivity
-			foreign key (iia_infoactivity_id) references to infoactivity(infoactivity_id)												-- FK IIA --> INFOACTIVITY
+			foreign key (iia_infoactivity_id) references infoactivity(infoactivity_id)												-- FK IIA --> INFOACTIVITY
 			ON DELETE NO ACTION ON UPDATE NO ACTION;
 	
 alter table tia add constraint tia_fk_ticket
-			foreign key (tia_ticket_id) references to ticket(ticket_id)																	-- FK TIA --> TICKET
+			foreign key (tia_ticket_id) references ticket(ticket_id)																	-- FK TIA --> TICKET
 			ON DELETE NO ACTION ON UPDATE NO ACTION;
 			
 alter table tia add constraint tia_fk_infoactivity
-			foreign key (tia_infoactivity_id) references to infoactivity(infoactivity_id)												-- FK TIA --> INFOACTIVITY
+			foreign key (tia_infoactivity_id) references infoactivity(infoactivity_id)												-- FK TIA --> INFOACTIVITY
 			ON DELETE NO ACTION ON UPDATE NO ACTION;
 		
 alter table tis add constraint tis_fk_ticket
-			foreign key (tis_ticket_id) references to ticket(ticket_id)																	-- FK TIS --> TICKET
+			foreign key (tis_ticket_id) references ticket(ticket_id)																	-- FK TIS --> TICKET
 			ON DELETE NO ACTION ON UPDATE NO ACTION;
 			
 alter table tis add constraint tis_fk_infospecifics
-			foreign key (tis_infospecifics_id) references to infospecifics(infospecifics_id)											-- FK TIS -->INFOSPECIFICS
+			foreign key (tis_infospecifics_id) references infospecifics(infospecifics_id)											-- FK TIS -->INFOSPECIFICS
 			ON DELETE NO ACTION ON UPDATE NO ACTION;

@@ -17,3 +17,13 @@ drop table tia;
 drop table tis;
 
 SET FOREIGN_KEY_CHECKS = 1;
+
+
+
+drop view userandpassword;
+drop view basicuserinfo;
+drop view ticketinfo;
+drop view reqticketinfo;
+drop view infosearchspecifics;
+drop view infosearchactivity;
+drop view infosearch;

@@ -1,0 +1,32 @@
+create view userandpassword as
+	select *
+    from user, userpasswords
+    where user_userpasswords_id = userpasswords_id;
+	
+create view basicuserinfo as
+	select user_name, user_birth, user_pic, usergender_type, usertype_type, user_email, userpasswords_string, userpasswords_salt
+    from user, userpasswords, usertype, usergender
+    where user_userpasswords_id=userpasswords_id and user_usertype_id=usertype_id and user_usergender_id=usergender_id;	
+	
+create view ticketinfo as
+	select user_email, usertype_type, ticket_id, ticket_name, ticket_scientificname, infospecifics_name, infoactivity_name, ticket_latitude, ticket_longitude,ticketstatus_status
+	from ticket, ticketstatus, ut, user, tis, tia, infoactivity, infospecifics, usertype
+	where ticket_ticketstatus_id=ticketstatus_id and ut_ticket_id=ticket_id and user_id=ut_userreq_id and ticket_id=tis_ticket_id and ticket_id=tia_ticket_id and infospecifics_id=tis_infospecifics_id and infoactivity_id=tia_infoactivity_id, user_usertype_id=usertype_it;
+	
+create view infosearchspecifics as
+	select info_name, info_description, info_scientificname, info_latitude, info_longitude
+	from info, infospecifics, iis
+	where iis_infospecifics_id = infospecifics_id and iis_info_id=info_id;
+	
+create view infosearchactivity as	
+	select info_name, info_description, info_scientificname, info_latitude, info_longitude, infoactivity_name
+	from info, iia, infoactivity
+	where iia_infoactivity_id=infoactivity_id and iia_info_id=info_id;
+	
+create view infosearch as	
+	select info_name, info_description, info_scientificname, info_latitude, info_longitude, infoactivity_name, infospecifics_name
+	from iia, iis, info, infoactivity, infospecifics
+	where iia_info_id = info_id and iia_infoactivity_id=infoactivity_id and iis_info_id=info_id and iis_infospecifics_id=infospecifics_id;
+	
+	
+	
